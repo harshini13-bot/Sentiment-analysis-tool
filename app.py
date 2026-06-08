@@ -28,24 +28,45 @@ user_text = st.text_area(
 
 if st.button("Analyze Sentiment"):
 
+   if st.button("Analyze Sentiment"):
+
     clean_text = preprocess(user_text)
 
-    transformed_text = vectorizer.transform(
-        [clean_text]
-    )
+    transformed_text = vectorizer.transform([clean_text])
 
-    prediction = model.predict(
-        transformed_text
-    )[0]
+    # Rule-based check
+    positive_words = [
+        "good", "great", "excellent", "best",
+        "amazing", "fantastic", "awesome",
+        "love", "recommended", "outstanding"
+    ]
 
-    probabilities = model.predict_proba(
-        transformed_text
-    )[0]
+    negative_words = [
+        "bad", "poor", "worst", "terrible",
+        "awful", "hate", "disappointed"
+    ]
 
-    confidence = round(
-        max(probabilities) * 100,
-        2
-    )
+    rule_prediction = None
+
+    for word in positive_words:
+        if word in clean_text:
+            rule_prediction = "positive"
+            break
+
+    for word in negative_words:
+        if word in clean_text:
+            rule_prediction = "negative"
+            break
+
+    # Use rule prediction if found, otherwise ML prediction
+    if rule_prediction:
+        prediction = rule_prediction
+    else:
+        prediction = model.predict(transformed_text)[0]
+
+    probabilities = model.predict_proba(transformed_text)[0]
+
+    confidence = round(max(probabilities) * 100, 2)
 
     if prediction == "positive":
 
