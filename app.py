@@ -28,8 +28,6 @@ user_text = st.text_area(
 
 if st.button("Analyze Sentiment"):
 
-   if st.button("Analyze Sentiment"):
-
     clean_text = preprocess(user_text)
 
     transformed_text = vectorizer.transform([clean_text])
