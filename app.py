@@ -1,5 +1,11 @@
 import streamlit as st
 import pickle
+import re
+
+def preprocess(text):
+    text = text.lower()
+    text = re.sub(r'[^a-zA-Z ]', '', text)
+    return text
 
 model = pickle.load(
     open("model.pkl", "rb")
@@ -34,6 +40,7 @@ user_text = st.text_area(
 
 if st.button("Analyze Sentiment"):
 
+    clean_text = preprocess(user_text)
     transformed_text = vectorizer.transform(
         [user_text]
     )
