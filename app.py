@@ -22,18 +22,6 @@ st.set_page_config(
 
 st.title("😊 Sentiment Analysis Tool")
 
-st.markdown("""
-### Features
-
-✅ TF-IDF Vectorization
-
-✅ Naive Bayes Classifier
-
-✅ Positive / Negative Prediction
-
-✅ Interactive UI
-""")
-
 user_text = st.text_area(
     "Enter a review"
 )
@@ -41,22 +29,40 @@ user_text = st.text_area(
 if st.button("Analyze Sentiment"):
 
     clean_text = preprocess(user_text)
+
     transformed_text = vectorizer.transform(
-        [user_text]
+        [clean_text]
     )
 
     prediction = model.predict(
         transformed_text
     )[0]
 
+    probabilities = model.predict_proba(
+        transformed_text
+    )[0]
+
+    confidence = round(
+        max(probabilities) * 100,
+        2
+    )
+
     if prediction == "positive":
 
         st.success(
-            "Positive Sentiment 😊"
+            f"Positive Sentiment 😊"
         )
 
     else:
 
         st.error(
-            "Negative Sentiment 😞"
+            f"Negative Sentiment 😞"
         )
+
+    st.write(
+        f"Confidence Score: {confidence}%"
+    )
+
+    st.progress(
+        int(confidence)
+    )
